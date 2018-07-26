@@ -29,13 +29,17 @@ import java.util.Base64.Encoder;
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
 
-public class EncryptManagerAsimetric {
+import com.cenfotec.encrypt.manager.Manager;
+import com.cenfotec.encrypt.template.Template;
+
+public class EncryptManagerAsimetric implements Template{
 
 	private final String KEY_EXTENSION = ".key";
 	private final String PUBLIC = "public";
 	private final String PRIVATE = "private";
 	private final String MESSAGE_ENCRYPT_EXTENSION = ".encript";
 	private final String PATH = "C:/encrypt/asymetric/";
+	private Manager manager = new Manager();
 	
 	public void createKey(String name) throws Exception {
 		KeyPairGenerator kpg = KeyPairGenerator.getInstance("RSA");
@@ -73,25 +77,18 @@ public class EncryptManagerAsimetric {
 		byte[] encryptedData = cipher.doFinal(message.getBytes(StandardCharsets.UTF_8));
 	    Encoder oneEncoder = Base64.getEncoder();
 	    encryptedData = oneEncoder.encode(encryptedData);
-		writeBytesFile(messageName,encryptedData,MESSAGE_ENCRYPT_EXTENSION);
+		manager.writeBytesFile(messageName,encryptedData,MESSAGE_ENCRYPT_EXTENSION);
 	}
 	
 	public void decryptMessage(String messageName, String keyName) throws Exception {
 		PrivateKey privKey = (PrivateKey)readKeyFromFile(keyName, PRIVATE);
 		Cipher cipher = Cipher.getInstance("RSA");
 		cipher.init(Cipher.DECRYPT_MODE, privKey);
-		byte[] encryptedMessage = readMessageFile(messageName);
+		byte[] encryptedMessage = manager.readMessageFile(messageName);
 		byte[] decryptedData = cipher.doFinal(encryptedMessage);
 	    String message = new String(decryptedData,StandardCharsets.UTF_8);
 	    System.out.println("El mensaje era: ");
 		System.out.println(message);
-	}
-	
-	
-	private void writeBytesFile(String name, byte[] content, String type) throws FileNotFoundException, IOException {
-		FileOutputStream fos = new FileOutputStream(PATH + name + type);
-		fos.write(content);
-		fos.close();
 	}
 	
 	Key readKeyFromFile(String keyFileName, String type) throws IOException {
@@ -117,18 +114,6 @@ public class EncryptManagerAsimetric {
 		    oin.close();
 		  }
 		}
-	
-	private byte[] readMessageFile(String messageName) throws Exception{
-		File file = new File(PATH + messageName + MESSAGE_ENCRYPT_EXTENSION);
-        int length = (int) file.length();
-        BufferedInputStream reader = new BufferedInputStream(new FileInputStream(file));
-        byte[] bytes = new byte[length];
-        reader.read(bytes, 0, length);
-        reader.close();
-        Decoder oneDecoder = Base64.getDecoder();
-		return oneDecoder.decode(bytes);
-		
-	}
 
 
 

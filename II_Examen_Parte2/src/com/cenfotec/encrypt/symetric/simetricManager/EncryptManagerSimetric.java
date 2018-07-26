@@ -17,8 +17,9 @@ import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
 
 import com.cenfotec.encrypt.manager.Manager;
+import com.cenfotec.encrypt.template.Template;
 
-public class EncryptManagerSimetric {
+public class EncryptManagerSimetric implements Template{
 
 	private final int KEYSIZE = 8;
 	private final String KEY_EXTENSION = ".key";
