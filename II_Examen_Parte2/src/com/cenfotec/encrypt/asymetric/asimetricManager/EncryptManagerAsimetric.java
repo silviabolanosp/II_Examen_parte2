@@ -80,15 +80,15 @@ public class EncryptManagerAsimetric implements Template{
 		manager.writeBytesFile(messageName,encryptedData,MESSAGE_ENCRYPT_EXTENSION);
 	}
 	
-	public void decryptMessage(String messageName, String keyName) throws Exception {
+	public String decryptMessage(String messageName, String keyName) throws Exception {
 		PrivateKey privKey = (PrivateKey)readKeyFromFile(keyName, PRIVATE);
 		Cipher cipher = Cipher.getInstance("RSA");
 		cipher.init(Cipher.DECRYPT_MODE, privKey);
 		byte[] encryptedMessage = manager.readMessageFile(messageName);
 		byte[] decryptedData = cipher.doFinal(encryptedMessage);
 	    String message = new String(decryptedData,StandardCharsets.UTF_8);
-	    System.out.println("El mensaje era: ");
-		System.out.println(message);
+		
+	    return message;
 	}
 	
 	Key readKeyFromFile(String keyFileName, String type) throws IOException {

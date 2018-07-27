@@ -43,7 +43,7 @@ public class EncryptManagerSimetric implements Template{
 		manager.writeBytesFile(messageName,encryptedData,MESSAGE_ENCRYPT_EXTENSION);
 	}
 	
-	public void decryptMessage(String messageName, String keyName) throws Exception {
+	public String decryptMessage(String messageName, String keyName) throws Exception {
 		byte[] key = readKeyFile(keyName);
 		byte[] encryptedMessage = manager.readMessageFile(messageName);
 		System.out.println(encryptedMessage.length);
@@ -52,8 +52,8 @@ public class EncryptManagerSimetric implements Template{
 		cipher.init(Cipher.DECRYPT_MODE, k);
 		byte[] DecryptedData = cipher.doFinal(encryptedMessage);
 		String message = new String(DecryptedData, StandardCharsets.UTF_8);
-		System.out.println("El mensaje era: ");
-		System.out.println(message);
+		
+		return message;
 	}
 	
 	private byte[] readKeyFile(String keyName) throws FileNotFoundException, IOException {
